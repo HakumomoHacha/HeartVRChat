@@ -1,0 +1,21 @@
+HeartVRChat — 心中的VRChat
+Copyright (C) 2026 HakuChya (HakumomoHacha)
+
+Project source code is licensed under the GNU General Public License,
+version 3 only (SPDX-License-Identifier: GPL-3.0-only).
+The complete license is provided in LICENSE.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+Third-party components retain their original licenses:
+
+- Microsoft .NET and Windows Desktop runtime: MIT and accompanying
+  third-party notices. A self-contained build copies these texts to
+  release/licenses/ alongside the executable.
+- Edge or Chrome is installed separately and is not redistributed here.
+- Pulsoid and VRChat are external services. Their names belong to their
+  respective owners. This project is not an official product of either.
+
+Source repository: https://github.com/HakumomoHacha/HeartVRChat

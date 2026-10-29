@@ -1,0 +1,17 @@
+bin/
+obj/
+release/
+.vs/
+ui-smoke.png
+ui-smoke-ok.txt
+ui-layout.txt
+ui-small.png
+ui-active.png
+.env
+.env.*
+settings.json
+*.user
+*.suo
+*.log
+*.zip
+.DS_Store

@@ -1,0 +1,29 @@
+name: Windows build and tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+      - name: Test and publish Windows application
+        shell: pwsh
+        run: ./build.ps1
+      - name: Upload portable application
+        uses: actions/upload-artifact@v4
+        with:
+          name: HeartVRChat-Windows-x64
+          path: release/
+          if-no-files-found: error

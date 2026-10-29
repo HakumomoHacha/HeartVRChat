@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+    <Copyright>Copyright (C) 2026 HakuChya (HakumomoHacha)</Copyright>
+    <RepositoryUrl>https://github.com/HakumomoHacha/HeartVRChat</RepositoryUrl>
+  </PropertyGroup>
+  <ItemGroup><EmbeddedResource Include="WebReader.js" /></ItemGroup>
+</Project>
