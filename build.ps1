@@ -11,7 +11,10 @@ try {
     Copy-Item -LiteralPath README.md -Destination release/README.md
     Copy-Item -LiteralPath LICENSE -Destination release/LICENSE
     Copy-Item -LiteralPath NOTICE -Destination release/NOTICE
-    if (Test-Path -LiteralPath docs) { Copy-Item -LiteralPath docs -Destination release/docs -Recurse -Force }
+    if (Test-Path -LiteralPath docs) {
+        New-Item -ItemType Directory -Path release/docs -Force | Out-Null
+        Copy-Item -Path docs/* -Destination release/docs -Recurse -Force
+    }
     if (Test-Path -LiteralPath '快速开始.html') { Copy-Item -LiteralPath '快速开始.html' -Destination release/快速开始.html }
     $nugetCache = ((dotnet nuget locals global-packages --list) -replace '^[^:]+:\s*', '').Trim()
     $runtimeVersion = ([xml](Get-Content -LiteralPath PulsoidVRC/PulsoidVRC.csproj -Raw)).Project.PropertyGroup.RuntimeFrameworkVersion

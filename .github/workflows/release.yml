@@ -50,6 +50,11 @@ jobs:
           $source = "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
           dotnet nuget push "artifacts/HeartVRChat.Core.$version.nupkg" --source $source --api-key $env:NUGET_AUTH_TOKEN --skip-duplicate
           if ($LASTEXITCODE -ne 0) { throw 'GitHub Packages publication failed.' }
+          $headers = @{ Authorization = "Bearer $env:NUGET_AUTH_TOKEN"; Accept = 'application/vnd.github+json' }
+          $package = Invoke-RestMethod "https://api.github.com/users/${{ github.repository_owner }}/packages/nuget/HeartVRChat.Core" -Headers $headers
+          $package | Select-Object name, package_type, visibility, html_url | ConvertTo-Json -Compress | Write-Output
+          $versions = Invoke-RestMethod "https://api.github.com/users/${{ github.repository_owner }}/packages/nuget/HeartVRChat.Core/versions" -Headers $headers
+          if (!($versions | Where-Object name -eq $version)) { throw 'Published NuGet version could not be verified.' }
       - name: Publish GitHub Release
         shell: pwsh
         env:
