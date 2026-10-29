@@ -1,0 +1,78 @@
+name: Publish release and NuGet package
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing version tag to publish, for example v1.3.0
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  packages: write
+
+concurrency:
+  group: publish-${{ inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+      - name: Check release version
+        shell: pwsh
+        env:
+          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+        run: |
+          $version = ([xml](Get-Content PulsoidVRC/PulsoidVRC.csproj -Raw)).Project.PropertyGroup.Version
+          if ($env:RELEASE_TAG -ne "v$version") { throw 'Tag does not match application version.' }
+          if ((git rev-parse HEAD) -ne (git rev-parse "$env:RELEASE_TAG^{commit}")) { throw 'Checkout does not match the release tag.' }
+      - name: Build, test and package
+        shell: pwsh
+        run: ./package.ps1
+      - name: Publish NuGet package to GitHub Packages
+        shell: pwsh
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $version = ([xml](Get-Content PulsoidVRC.Core/PulsoidVRC.Core.csproj -Raw)).Project.PropertyGroup.Version
+          $source = "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+          dotnet nuget push "artifacts/HeartVRChat.Core.$version.nupkg" --source $source --api-key $env:NUGET_AUTH_TOKEN --skip-duplicate
+          if ($LASTEXITCODE -ne 0) { throw 'GitHub Packages publication failed.' }
+      - name: Publish GitHub Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+        run: |
+          $existing = gh release view $env:RELEASE_TAG --json isDraft 2>$null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create $env:RELEASE_TAG --verify-tag --draft --title "心中的VRChat $env:RELEASE_TAG" --notes-file .github/RELEASE_NOTES.md
+            if ($LASTEXITCODE -ne 0) { throw 'Cannot create release draft.' }
+          } elseif (!(($existing | ConvertFrom-Json).isDraft)) {
+            Write-Host 'Release is already public; leaving its existing files unchanged.'
+            exit 0
+          }
+          $files = Get-ChildItem artifacts -File | Select-Object -ExpandProperty FullName
+          gh release upload $env:RELEASE_TAG @files --clobber
+          if ($LASTEXITCODE -ne 0) { throw 'Release asset upload failed.' }
+          gh release edit $env:RELEASE_TAG --draft=false --latest
+          if ($LASTEXITCODE -ne 0) { throw 'Cannot publish release.' }
+      - name: Preserve build artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: HeartVRChat-release-files
+          path: artifacts/
+          if-no-files-found: warn

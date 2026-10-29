@@ -7,6 +7,18 @@
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
     <Copyright>Copyright (C) 2026 HakuChya (HakumomoHacha)</Copyright>
     <RepositoryUrl>https://github.com/HakumomoHacha/HeartVRChat</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageId>HeartVRChat.Core</PackageId>
+    <Version>1.3.0</Version>
+    <Authors>HakumomoHacha</Authors>
+    <Description>Core library for HeartVRChat: Pulsoid heart-rate readers, data freshness checks, throttling, and VRChat OSC chat messages.</Description>
+    <PackageTags>VRChat;Pulsoid;OSC;heart-rate</PackageTags>
+    <PackageReadmeFile>PACKAGE_README.md</PackageReadmeFile>
   </PropertyGroup>
   <ItemGroup><EmbeddedResource Include="WebReader.js" /></ItemGroup>
+  <ItemGroup>
+    <None Include="PACKAGE_README.md" Pack="true" PackagePath="/" />
+    <None Include="../LICENSE" Pack="true" PackagePath="/" />
+    <None Include="../NOTICE" Pack="true" PackagePath="/" />
+  </ItemGroup>
 </Project>

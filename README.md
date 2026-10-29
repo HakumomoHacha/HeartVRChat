@@ -4,6 +4,16 @@
 
 Windows 10/11 x64 中文桌面工具。点击「开始推送」后在后台读取 Pulsoid 心率组件网页，不弹出浏览器窗口，将心率发送到 VRChat 聊天框，**无需 Pulsoid API Token**。原有官方 API 模式仍可选。
 
+## 下载
+
+| 用途 | 入口 |
+|---|---|
+| 直接运行 Windows 软件 | [最新 GitHub Release](https://github.com/HakumomoHacha/HeartVRChat/releases/latest)，下载 `HeartVRChat-1.3.0-Windows-x64.zip` 并解压 |
+| 获取源码或核对文件 | 同一 Release 提供源码压缩包和 `SHA256SUMS.txt` |
+| 在 .NET 项目中使用核心库 | GitHub Packages 的 `HeartVRChat.Core`，包源为 `https://nuget.pkg.github.com/HakumomoHacha/index.json`；[安装说明](PulsoidVRC.Core/PACKAGE_README.md) |
+
+Releases 中也附带 `.nupkg` 文件，可下载到自己的本地 NuGet 源使用。GitHub NuGet 源下载需要 GitHub 身份验证。
+
 ## 快速使用
 
 准备 Windows 10/11 x64 电脑并安装 Edge 或 Chrome，手机和电脑保持联网。
@@ -95,6 +105,14 @@ API 模式具有自动重连、原始测量时间过滤，不要求打开组件�
 ```powershell
 ./build.ps1
 ```
+
+生成发布压缩包、对应源码、NuGet 包和校验文件：
+
+```powershell
+./package.ps1
+```
+
+文件写入 `artifacts/`。推送与项目版本一致的 `v*` 标签后，发布工作流会运行测试、构建并上传 GitHub Releases 与 GitHub Packages。
 
 | 源码 | 内容 |
 |---|---|
